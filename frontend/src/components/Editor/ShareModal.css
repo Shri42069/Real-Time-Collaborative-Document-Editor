@@ -1,0 +1,170 @@
+.share-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  padding: 24px;
+}
+
+.share-modal {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e5e4e0;
+  width: 100%;
+  max-width: 420px;
+  padding: 24px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.14);
+}
+
+.share-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.share-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.share-close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #999;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.share-close:hover { color: #333; background: #f5f4f0; }
+
+.share-doc-name {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Invite form ───────────────────────────────────── */
+.share-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.share-input {
+  flex: 1;
+  padding: 9px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  outline: none;
+  background: #fafaf8;
+  transition: border-color .15s;
+}
+.share-input:focus { border-color: #7F77DD; background: #fff; }
+
+.share-add-btn {
+  padding: 9px 16px;
+  background: #534AB7;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s;
+}
+.share-add-btn:hover:not(:disabled) { background: #3C3489; }
+.share-add-btn:disabled { opacity: .55; }
+
+.share-error   { font-size: 12px; color: #a32d2d; margin: 4px 0 10px; }
+.share-success { font-size: 12px; color: #3b6d11; margin: 4px 0 10px; }
+
+/* ── People list ───────────────────────────────────── */
+.share-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: #aaa;
+  margin: 16px 0 8px;
+}
+
+.share-people {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.share-person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #fafaf8;
+}
+
+.share-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.share-person-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.share-person-name {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.share-person-role {
+  display: block;
+  font-size: 11px;
+  color: #aaa;
+}
+
+.share-remove-btn {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 5px;
+  border: 1px solid #eee;
+  background: #fff;
+  color: #888;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color .15s, border-color .15s;
+}
+.share-remove-btn:hover:not(:disabled) { color: #a32d2d; border-color: #f7c1c1; }
+.share-remove-btn:disabled { opacity: .5; }
+
+.share-empty {
+  font-size: 12px;
+  color: #bbb;
+  text-align: center;
+  padding: 12px 0 4px;
+}

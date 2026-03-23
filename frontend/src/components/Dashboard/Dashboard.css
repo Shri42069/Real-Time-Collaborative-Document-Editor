@@ -1,0 +1,234 @@
+/* ── Shell ─────────────────────────────────────────── */
+.dash-shell {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f4f0;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Sidebar ───────────────────────────────────────── */
+.dash-sidebar {
+  width: 220px;
+  background: #fff;
+  border-right: 1px solid #e5e4e0;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  flex-shrink: 0;
+}
+
+.dash-brand {
+  font-size: 16px;
+  font-weight: 700;
+  color: #534AB7;
+  margin-bottom: 28px;
+  padding: 0 8px;
+}
+
+.dash-nav { flex: 1; }
+
+.dash-nav-item {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #444;
+  cursor: pointer;
+  transition: background .12s;
+}
+.dash-nav-item.active,
+.dash-nav-item:hover { background: #f0effe; color: #534AB7; }
+
+/* ── User row ──────────────────────────────────────── */
+.dash-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 8px;
+  border-top: 1px solid #eee;
+  margin-top: auto;
+}
+
+.dash-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.dash-user-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.dash-user-name {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-user-email {
+  display: block;
+  font-size: 11px;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-logout {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #bbb;
+  padding: 4px;
+  flex-shrink: 0;
+}
+.dash-logout:hover { color: #a32d2d; }
+
+/* ── Main ──────────────────────────────────────────── */
+.dash-main {
+  flex: 1;
+  padding: 32px 40px;
+  overflow-y: auto;
+}
+
+.dash-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.dash-heading {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.dash-create-btn {
+  padding: 10px 20px;
+  background: #534AB7;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+}
+.dash-create-btn:hover:not(:disabled) { background: #3C3489; }
+.dash-create-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+/* ── States ────────────────────────────────────────── */
+.dash-loading,
+.dash-empty {
+  text-align: center;
+  color: #999;
+  margin-top: 80px;
+}
+
+.dash-empty-icon { font-size: 48px; margin-bottom: 12px; }
+.dash-empty-text { font-size: 16px; margin-bottom: 20px; }
+
+.dash-error {
+  background: #fcebeb;
+  color: #a32d2d;
+  border: 1px solid #f7c1c1;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+/* ── Document grid ─────────────────────────────────── */
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.dash-doc-card {
+  background: #fff;
+  border: 1px solid #e5e4e0;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s, transform .1s;
+  position: relative;
+}
+
+.dash-doc-card:hover {
+  border-color: #c5c1f5;
+  box-shadow: 0 4px 16px rgba(83,74,183,.1);
+  transform: translateY(-1px);
+}
+
+.dash-doc-icon { font-size: 24px; flex-shrink: 0; }
+
+.dash-doc-info { flex: 1; min-width: 0; }
+
+.dash-doc-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-doc-meta {
+  font-size: 12px;
+  color: #aaa;
+  margin: 0;
+}
+
+.dash-doc-collab {
+  font-size: 11px;
+  color: #534AB7;
+  margin: 4px 0 0;
+  font-weight: 500;
+}
+
+.dash-doc-delete {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #ccc;
+  cursor: pointer;
+  padding: 2px 5px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity .15s, color .15s;
+}
+.dash-doc-card:hover .dash-doc-delete { opacity: 1; }
+.dash-doc-delete:hover { color: #a32d2d; background: #fcebeb; }
+
+/* ── Responsive ────────────────────────────────────── */
+@media (max-width: 640px) {
+  .dash-sidebar { display: none; }
+  .dash-main    { padding: 20px 16px; }
+}
