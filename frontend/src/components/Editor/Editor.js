@@ -21,7 +21,7 @@ const TOOLBAR = [
 ];
 
 export default function Editor({ documentId }) {
-  const { user, accessToken } = useAuth();
+  const { user } = useAuth();
   const {
     title, setTitle,
     activeUsers, cursors,
@@ -52,7 +52,7 @@ export default function Editor({ documentId }) {
     inited.current = true;
     setQuillInstance(quill); // store for CursorOverlay
     initEditor(quill);
-  });
+  }, [initEditor]);
 
   useEffect(() => {
     inited.current = false;
