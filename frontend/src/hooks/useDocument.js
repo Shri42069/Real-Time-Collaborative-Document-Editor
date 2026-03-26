@@ -19,7 +19,6 @@ export function useDocument(documentId) {
   const ydocRef       = useRef(null);
   const bindingRef    = useRef(null);
   const lastCursor    = useRef(0);
-  // Holds the Yjs update received from server before Quill is ready
   const pendingUpdate = useRef(null);
 
   const initEditor = useCallback((quill) => {
@@ -31,13 +30,11 @@ export function useDocument(documentId) {
     const ytext = ydoc.getText('quill');
     bindingRef.current = new QuillBinding(ytext, quill);
 
-    // If load-document already arrived before Quill was ready, apply it now
     if (pendingUpdate.current) {
       Y.applyUpdate(ydoc, pendingUpdate.current, 'remote');
       pendingUpdate.current = null;
     }
 
-    // Forward local Yjs updates to server
     ydoc.on('update', (update, origin) => {
       if (origin === 'remote') return;
       const socket = getSocket();
@@ -49,19 +46,21 @@ export function useDocument(documentId) {
       }
     });
 
-    // Throttled cursor broadcast
-    quill.on('selection-change', (range) => {
+    // Cursor broadcast — emit on EVERY selection change, no throttle skip on first move
+    quill.on('selection-change', (range, oldRange, source) => {
+      if (source !== 'user') return; // only broadcast user-initiated moves
       const now = Date.now();
       if (now - lastCursor.current < CURSOR_THROTTLE_MS) return;
       lastCursor.current = now;
       const socket = getSocket();
-      if (socket?.connected && range) {
-        socket.emit('cursor-move', { documentId, position: range });
+      if (socket?.connected) {
+        const pos = range || { index: 0, length: 0 };
+        console.log('[CURSOR] emitting cursor-move, position:', JSON.stringify(pos));
+        socket.emit('cursor-move', { documentId, position: pos });
       }
     });
   }, [documentId]);
 
-  // Socket event wiring
   useEffect(() => {
     if (!documentId) return;
     const socket = getSocket();
@@ -72,16 +71,12 @@ export function useDocument(documentId) {
 
     socket.on('load-document', ({ yjsUpdate, title: t }) => {
       setTitleState(t || '');
-
       if (!yjsUpdate) return;
       const bytes = base64ToUint8(yjsUpdate);
-      if (bytes.length <= 2) return; // empty Yjs doc — nothing to apply
-
+      if (bytes.length <= 2) return;
       if (bindingRef.current && ydocRef.current) {
-        // Binding already exists — apply directly
         Y.applyUpdate(ydocRef.current, bytes, 'remote');
       } else {
-        // Quill not ready yet — store and apply in initEditor
         pendingUpdate.current = bytes;
       }
     });
@@ -100,7 +95,11 @@ export function useDocument(documentId) {
     });
 
     socket.on('cursor-move', ({ userId, username, color, position }) => {
-      setCursors(prev => ({ ...prev, [userId]: { username, color, position } }));
+      console.log('[CURSOR] received cursor-move from', username, 'position:', JSON.stringify(position));
+      setCursors(prev => ({
+        ...prev,
+        [userId]: { username, color, position },
+      }));
     });
 
     socket.on('title-changed', ({ title: t }) => setTitleState(t));

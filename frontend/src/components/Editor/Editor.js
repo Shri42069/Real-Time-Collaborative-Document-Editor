@@ -35,28 +35,26 @@ export default function Editor({ documentId }) {
   const [docMeta,      setDocMeta]      = useState(null);
   const [shareLoading, setShareLoading] = useState(false);
   const [titleInput,   setTitleInput]   = useState(title);
-  const [quillInstance, setQuillInstance] = useState(null); // actual Quill editor instance
 
   const titleTimer = useRef(null);
-  const quillRef   = useRef(null);
-  const inited     = useRef(false);
+  const quillRef   = useRef(null);   // ReactQuill component ref
+  const inited     = useRef(false);  // init guard
 
   useEffect(() => { setTitleInput(title); }, [title]);
 
-  // Init Yjs<->Quill as soon as ReactQuill mounts
+  // Init Yjs<->Quill binding once ReactQuill has mounted
   useEffect(() => {
     if (inited.current) return;
     if (!quillRef.current) return;
     const quill = quillRef.current.getEditor();
     if (!quill) return;
     inited.current = true;
-    setQuillInstance(quill); // store for CursorOverlay
     initEditor(quill);
   }, [initEditor]);
 
+  // Reset init guard when navigating to a different document
   useEffect(() => {
     inited.current = false;
-    setQuillInstance(null);
   }, [documentId]);
 
   const onTitleChange = (e) => {
@@ -67,8 +65,7 @@ export default function Editor({ documentId }) {
   };
 
   const openShare = async () => {
-    console.log('[SHARE] openShare clicked');
-    console.log('[SHARE] getCurrentToken():', getCurrentToken() ? 'SET' : 'NULL');
+    console.log('[SHARE] token:', getCurrentToken() ? 'SET' : 'NULL');
     setShareLoading(true);
     try {
       const doc = await documentService.get(documentId);
@@ -141,8 +138,8 @@ export default function Editor({ documentId }) {
             modules={{ toolbar: TOOLBAR }}
             placeholder="Start writing…"
           />
-          {/* Pass quill instance directly — no more DOM querySelector hack */}
-          <CursorOverlay cursors={cursors} quill={quillInstance} />
+          {/* Pass the ReactQuill ref — CursorOverlay calls .getEditor() itself */}
+          <CursorOverlay cursors={cursors} quillRef={quillRef} />
         </div>
 
         {showHistory && (
