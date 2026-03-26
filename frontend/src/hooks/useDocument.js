@@ -5,7 +5,7 @@ import { getSocket }     from '../services/socket';
 import { documentService } from '../services/documents';
 import { uint8ToBase64, base64ToUint8 } from '../utils/base64';
 
-const CURSOR_THROTTLE_MS = 50;
+const CURSOR_THROTTLE_MS = 30;
 
 export function useDocument(documentId) {
   const [title,       setTitleState]  = useState('');

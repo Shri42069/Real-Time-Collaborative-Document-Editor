@@ -35,6 +35,7 @@ export default function Editor({ documentId }) {
   const [docMeta,      setDocMeta]      = useState(null);
   const [shareLoading, setShareLoading] = useState(false);
   const [titleInput,   setTitleInput]   = useState(title);
+  const [quillInstance, setQuillInstance] = useState(null); // actual Quill editor instance
 
   const titleTimer = useRef(null);
   const quillRef   = useRef(null);
@@ -42,19 +43,20 @@ export default function Editor({ documentId }) {
 
   useEffect(() => { setTitleInput(title); }, [title]);
 
-  // Init Yjs<->Quill as soon as Quill mounts
+  // Init Yjs<->Quill as soon as ReactQuill mounts
   useEffect(() => {
     if (inited.current) return;
     if (!quillRef.current) return;
     const quill = quillRef.current.getEditor();
     if (!quill) return;
     inited.current = true;
-    console.log('[EDITOR] Quill ready — calling initEditor');
+    setQuillInstance(quill); // store for CursorOverlay
     initEditor(quill);
   });
 
   useEffect(() => {
     inited.current = false;
+    setQuillInstance(null);
   }, [documentId]);
 
   const onTitleChange = (e) => {
@@ -66,18 +68,13 @@ export default function Editor({ documentId }) {
 
   const openShare = async () => {
     console.log('[SHARE] openShare clicked');
-    console.log('[SHARE] accessToken from useAuth:', accessToken ? `SET (${accessToken.slice(0,20)}...)` : 'NULL');
-    console.log('[SHARE] getCurrentToken() from api module:', getCurrentToken() ? `SET (${getCurrentToken().slice(0,20)}...)` : 'NULL');
-    console.log('[SHARE] documentId:', documentId);
-
+    console.log('[SHARE] getCurrentToken():', getCurrentToken() ? 'SET' : 'NULL');
     setShareLoading(true);
     try {
-      console.log('[SHARE] Calling documentService.get(', documentId, ')');
       const doc = await documentService.get(documentId);
-      console.log('[SHARE] documentService.get succeeded:', doc.title);
       setDocMeta(doc);
     } catch (err) {
-      console.error('[SHARE] documentService.get FAILED:', err.response?.status, err.response?.data);
+      console.error('[SHARE] failed:', err.response?.status, err.response?.data);
       setDocMeta(null);
     } finally {
       setShareLoading(false);
@@ -106,7 +103,7 @@ export default function Editor({ documentId }) {
   return (
     <div className="editor-shell">
       <div className="editor-topbar">
-        <button className="btn-back" onClick={() => window.location.href = '/dashboard'} title="Back">←</button>
+        <button className="btn-back" onClick={() => window.location.href = '/dashboard'}>←</button>
 
         <input
           className="editor-title"
@@ -120,10 +117,13 @@ export default function Editor({ documentId }) {
           <span className={`editor-status ${connected ? 'connected' : 'disconnected'}`}>
             {connected ? '● Live' : '○ Offline'}
           </span>
+
           <ActiveUsers users={activeUsers} currentUserId={user?._id} />
+
           <button className="btn-secondary" onClick={openShare} disabled={shareLoading}>
             {shareLoading ? '…' : 'Share'}
           </button>
+
           <button className="btn-secondary" onClick={() => {
             setShowHistory(h => !h);
             if (!showHistory) loadVersions();
@@ -134,14 +134,15 @@ export default function Editor({ documentId }) {
       </div>
 
       <div className="editor-body">
-        <div className="editor-paper" id="editor-paper">
+        <div className="editor-paper">
           <ReactQuill
             ref={quillRef}
             theme="snow"
             modules={{ toolbar: TOOLBAR }}
             placeholder="Start writing…"
           />
-          <CursorOverlay cursors={cursors} editorId="editor-paper" />
+          {/* Pass quill instance directly — no more DOM querySelector hack */}
+          <CursorOverlay cursors={cursors} quill={quillInstance} />
         </div>
 
         {showHistory && (

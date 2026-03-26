@@ -157,3 +157,32 @@
   transition: color .15s, background .15s;
 }
 .btn-back:hover { color: #1a1a1a; background: #f0effe; }
+
+/* ── Remote cursor blink animation ─────────────────── */
+@keyframes ql-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── Quill container must be relative for cursor abs positioning ── */
+.editor-paper .ql-container {
+  position: relative !important;
+}
+
+/* ── Cursor containers live inside .ql-container ────── */
+.ql-cursor-container {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+}
+
+/* ── Selection highlights live inside .ql-editor ─────── */
+.ql-cursor-highlight {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
